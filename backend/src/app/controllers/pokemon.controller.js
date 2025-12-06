@@ -1,15 +1,15 @@
 import {
-  fetchAllPokemon,
   fetchPokemonById,
   fetchPokemonByType,
   fetchPokemonByGeneration,
+  fetchPokemonPaginated,
 } from "../services/pokemon.service.js";
 import { searchPokemon } from "../services/pokemon.service.js";
 
 export async function getAllPokemon(req, res) {
   try {
-    const { lang } = req.query;
-    const pokemon = await fetchAllPokemon(lang);
+    const { page, limit, lang } = req.query;
+    const pokemon = await fetchPokemonPaginated(page, limit, lang);
     res.json(pokemon);
   } catch (err) {
     console.error(err);
@@ -41,9 +41,9 @@ export async function getPokemonById(req, res) {
 
 export async function handleSearchPokemon(req, res) {
   try {
-    const { search, lang } = req.query;
+    const { search, page, limit, lang } = req.query;
 
-    const result = await searchPokemon(search, lang);
+    const result = await searchPokemon(search, page, limit, lang);
 
     res.json(result);
   } catch (err) {
@@ -54,9 +54,9 @@ export async function handleSearchPokemon(req, res) {
 
 export async function handleFilterByType(req, res) {
   try {
-    const { type, lang } = req.query;
+    const { type, page, limit, lang } = req.query;
 
-    const pokemons = await fetchPokemonByType(type, lang);
+    const pokemons = await fetchPokemonByType(type, page, limit, lang);
 
     res.json(pokemons);
   } catch (err) {
@@ -67,9 +67,14 @@ export async function handleFilterByType(req, res) {
 
 export async function handleFilterByGeneration(req, res) {
   try {
-    const { generation, lang } = req.query;
+    const { generation, page, limit, lang } = req.query;
 
-    const result = await fetchPokemonByGeneration(generation, lang);
+    const result = await fetchPokemonByGeneration(
+      generation,
+      page,
+      limit,
+      lang
+    );
     res.json(result);
   } catch (err) {
     console.error("Erreur filtre génération:", err);
