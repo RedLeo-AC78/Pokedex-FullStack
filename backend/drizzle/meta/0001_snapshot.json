@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "05aef607-41b8-4905-9eda-e67031665682",
+  "id": "502aba2a-b92c-44a2-b7c0-080020fb319c",
   "prevId": "f57c6209-5569-479e-bc37-6744911e72de",
   "tables": {
     "pokemon": {
@@ -98,8 +98,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "defence": {
-          "name": "defence",
+        "defense": {
+          "name": "defense",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -112,8 +112,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "special_defence": {
-          "name": "special_defence",
+        "special_defense": {
+          "name": "special_defense",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -215,15 +215,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name_fr": {
-          "name": "name_fr",
+        "name_en": {
+          "name": "name_en",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "name_en": {
-          "name": "name_en",
+        "name_fr": {
+          "name": "name_fr",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

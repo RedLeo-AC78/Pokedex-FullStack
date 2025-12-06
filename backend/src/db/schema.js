@@ -21,9 +21,9 @@ export const pokemon = sqliteTable("pokemon", {
 
   hp: integer("hp"),
   attack: integer("attack"),
-  defense: integer("defence"),
+  defense: integer("defense"),
   special_attack: integer("special_attack"),
-  special_defense: integer("special_defence"),
+  special_defense: integer("special_defense"),
   speed: integer("speed"),
 
   height: integer("height"),
@@ -39,7 +39,7 @@ export const types = sqliteTable("types", {
   name_en: text("name_en").notNull(),
 });
 
-// Table relation Pokemon <-> Type
+// Table relation Pokemon_Type
 export const pokemonTypes = sqliteTable("pokemon_types", {
   pokemon_id: integer("pokemon_id")
     .notNull()
