@@ -2,13 +2,21 @@ import {
   transformPokemonResponse,
   transformPokemonDetails,
 } from "../utils/transformPokemon.js";
+import { normalizePagination } from "../utils/pagination.js";
 import { db } from "../../db/index.js";
 import { pokemon, types, pokemonTypes } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
 import { sql, like } from "drizzle-orm";
 
-export async function fetchAllPokemon(lang = "fr") {
-  const result = await db.select().from(pokemon).limit(50);
+export async function fetchAllPokemon(lang = "fr", page = 1, limit = 20) {
+  return transformPokemonResponse(page, limit, lang);
+}
+
+export async function fetchPokemonPaginated(page = 1, limit = 20, lang = "fr") {
+  const { limit: l, offset } = normalizePagination(page, limit);
+
+  const result = await db.select().from(pokemon).limit(l).offset(offset);
+
   return transformPokemonResponse(result, lang);
 }
 
@@ -35,9 +43,11 @@ export async function fetchPokemonById(id, lang = "fr") {
   return transformPokemonDetails(p, resultTypes, lang);
 }
 
-export async function searchPokemon(term, lang = "fr") {
+export async function searchPokemon(term, page = 1, limit = 20, lang = "fr") {
+  const { limit: l, offset } = normalizePagination(page, limit);
+
   if (!term || term.trim() === "") {
-    return await fetchAllPokemon(lang);
+    return await fetchAllPokemon(lang, page, limit);
   }
 
   const search = term.toLowerCase();
@@ -47,14 +57,23 @@ export async function searchPokemon(term, lang = "fr") {
   const result = await db
     .select()
     .from(pokemon)
-    .where(like(sql`lower(${column})`, `%${search}%`));
+    .where(like(sql`lower(${column})`, `%${search}%`))
+    .limit(l)
+    .offset(offset);
 
   return transformPokemonResponse(result, lang);
 }
 
-export async function fetchPokemonByType(typeName, lang = "fr") {
+export async function fetchPokemonByType(
+  typeName,
+  page = 1,
+  limit = 20,
+  lang = "fr"
+) {
+  const { limit: l, offset } = normalizePagination(page, limit);
+
   if (!typeName || typeName.trim() === "") {
-    return await fetchAllPokemon(lang);
+    return await fetchAllPokemon(lang, page, limit);
   }
 
   const typeColumn = lang === "en" ? types.name_en : types.name_fr;
@@ -80,19 +99,30 @@ export async function fetchPokemonByType(typeName, lang = "fr") {
     })
     .from(pokemon)
     .innerJoin(pokemonTypes, eq(pokemon.id, pokemonTypes.pokemon_id))
-    .where(eq(pokemonTypes.type_id, typeId));
+    .where(eq(pokemonTypes.type_id, typeId))
+    .limit(l)
+    .offset(offset);
 
   return transformPokemonResponse(pokemons, lang);
 }
 
-export async function fetchPokemonByGeneration(gen, lang = "fr") {
+export async function fetchPokemonByGeneration(
+  gen,
+  page = 1,
+  limit = 20,
+  lang = "fr"
+) {
+  const { limit: l, offset } = normalizePagination(page, limit);
+
   const generation = parseInt(gen);
   if (isNaN(generation)) return [];
 
   const result = await db
     .select()
     .from(pokemon)
-    .where(eq(pokemon.generation, generation));
+    .where(eq(pokemon.generation, generation))
+    .limit(l)
+    .offset(offset);
 
   return transformPokemonResponse(result, lang);
 }
